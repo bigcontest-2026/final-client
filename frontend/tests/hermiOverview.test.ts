@@ -109,7 +109,7 @@ describe('Nationwide overview geography', () => {
   });
 
   it('reconciles the shipped December nationwide coverage and provincial averages', () => {
-    const records = readFileSync(new URL('../../../model/data/i5/national_2025/sgg_isolation_index.jsonl', import.meta.url), 'utf8')
+    const records = readFileSync(new URL('./fixtures/sgg_isolation_index_202512.jsonl', import.meta.url), 'utf8')
       .trim().split('\n').map(line => JSON.parse(line) as Row).filter(item => item.month === '202512');
     expect(records).toHaveLength(264);
     expect(data.aggregate(records)).toMatchObject({

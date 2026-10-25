@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { candidateText, fetchModelPages, formatNumber, mapSurvey, validatePage, type ModelPage, type SurveyArea } from "../src/finalModel";
 import type { Boundaries } from "../src/MapView";
 
@@ -66,8 +66,8 @@ describe("final model presentation boundaries", () => {
     fetch.mockResolvedValueOnce(response(first)).mockResolvedValueOnce(response({ ...second, run_id: 'changed' }));
     await expect(fetchModelPages('survey-area', { limit: '1' }, page.contract_version, new AbortController().signal)).rejects.toThrow('버전');
   });
-  const actual = new URL('../../../model/data/i5/national_2025/dong_isolation_index.jsonl', import.meta.url);
-  it.skipIf(!existsSync(actual))("maps all 427 actual Seoul I5 rows to the existing boundary by code", () => {
+  const actual = new URL('./fixtures/dong_isolation_index_seoul_202512.jsonl', import.meta.url);
+  it("maps all 427 actual Seoul I5 rows to the existing boundary by code", () => {
     const data: SurveyArea[] = readFileSync(actual, 'utf8').trim().split('\n').map(line => JSON.parse(line));
     const seoul = data.filter(r => r.month === '202512' && r.region_code.startsWith('11'));
     const geo = JSON.parse(readFileSync(new URL('../../shared/mock/districts.geojson', import.meta.url), 'utf8')) as Boundaries;

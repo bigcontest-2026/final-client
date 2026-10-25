@@ -6,13 +6,13 @@ import {createContext,Script} from 'node:vm';
 
 const html=readFileSync(new URL('../../shared/hermes-complete.html',import.meta.url),'utf8');
 const scripts=fileURLToPath(new URL('../scripts/',import.meta.url));
-const root=fileURLToPath(new URL('../../../',import.meta.url));
+const root=fileURLToPath(new URL('../../',import.meta.url));
 const regenerated=execFileSync('python3',['-c',`
 import subprocess,sys
 sys.path.insert(0,sys.argv[1])
 from hermes_analysis_reports import patch_analysis_reports
 from hermes_plain_language import patch_html
-original=subprocess.check_output(['git','show','HEAD:service/shared/hermes-complete.html'],cwd=sys.argv[2]).decode().replace('\\r\\n','\\n')
+original=subprocess.check_output(['git','show','HEAD:shared/hermes-complete.html'],cwd=sys.argv[2]).decode().replace('\\r\\n','\\n')
 patched=patch_analysis_reports(patch_html(original))
 assert patch_analysis_reports(patched)==patched
 print(patched)

@@ -39,7 +39,7 @@ jobs:
         env:
           VITE_APP_MODE: final
           VITE_MODEL_API_BASE_URL: ${{ vars.VITE_MODEL_API_BASE_URL }}
-          VITE_BASE_PATH: /service/
+          VITE_BASE_PATH: /final-client/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
