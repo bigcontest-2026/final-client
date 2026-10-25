@@ -1,12 +1,12 @@
 /* Optional browser QA. Set PLAYWRIGHT_MODULE to an installed playwright package,
  * or install playwright in this repository's Node resolution path.
- * Usage: node scripts/browser_smoke.cjs http://127.0.0.1:4173/service/?mode=mock
+ * Usage: node scripts/browser_smoke.cjs http://127.0.0.1:4173/final-client/?mode=mock
  */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
-const target = process.argv[2] || 'http://127.0.0.1:4173/service/?mode=mock';
+const target = process.argv[2] || 'http://127.0.0.1:4173/final-client/?mode=mock';
 const output = path.resolve(process.env.QA_OUTPUT_DIR || '.artifacts/browser');
 fs.mkdirSync(output, { recursive: true });
 

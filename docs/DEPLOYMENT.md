@@ -27,9 +27,9 @@ docker run --rm -p 8000:8000 \
 
 ## CI와 Pages
 
-`ci.yml`의 `frontend`는 정적 자료 검사·프런트 테스트·`final` 모드 빌드를 수행합니다. `check`는 서비스와 현재 `model`을 가져와 서비스 API를 검사합니다. `DONGHAENG_REPOSITORIES_TOKEN`에는 비공개 `bigcontest-2026/model`의 Contents 읽기 권한이 필요합니다. 기존 토큰에 이 권한이 있으면 그대로 사용합니다. fork PR 등 secret이 없는 환경에서는 비공개 모델 checkout 작업이 실행될 수 없습니다.
+> 2026-10-26 분리 이후: 이 저장소(final-client)의 `ci.yml`에는 `frontend` job만 있습니다. 서비스 API·에이전트 검사는 [final-server](https://github.com/bigcontest-2026/final-server)의 CI로 옮겼고, 형제 레포 checkout과 `DONGHAENG_REPOSITORIES_TOKEN`은 더 이상 쓰지 않습니다.
 
-CI는 model checkout에 포함된 전국 I5 실제 번들로 지역·페이지·기본 경로를 검사합니다. 변조·경계 검사는 합성 fixture도 사용합니다. 과거 I5 재생성 검사는 V3 확정 집계가 없으면 skip하며, 이전 Agent 의존성이 없으면 기존 조사·시연 테스트 4개 모듈과 전국 I5의 조사 연계 검사가 skip됩니다. 전국 I5 HTTP 조회는 기본 `final` 모드에서도 검사합니다.
+`ci.yml`의 `frontend`는 정적 자료 검사·프런트 테스트·`final` 모드 빌드(`VITE_BASE_PATH=/final-client/`)를 수행합니다. 테스트가 읽는 전국 I5 행은 `frontend/tests/fixtures/`에 들어 있으며, 서버 번들이 바뀌면 `scripts/build_i5_fixtures.py`로 다시 만듭니다.
 
 `deploy-pages.yml`은 수동 실행하며 현재 `final` 화면을 빌드합니다. 저장소 변수 `VITE_MODEL_API_BASE_URL`이 없으면 빌드 전에 중단합니다. 배포할 API의 HTTPS 주소와 Pages 출처에 대한 CORS를 먼저 준비합니다. 현재 작업에서는 원격 CI 실행·Pages 변경·배포를 수행하지 않았습니다.
 

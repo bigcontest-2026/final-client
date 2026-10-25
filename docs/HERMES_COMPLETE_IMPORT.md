@@ -25,9 +25,9 @@
 
 화면 용어는 `shared/hermi-copy.js`와 `frontend/scripts/hermes_plain_language.py`에서 관리한다. 내부 계산·API 키는 유지하고, 생성된 설명·저장된 답변의 표시·보고서 내려받기에는 쉬운 한국어를 적용한다. 사용자 입력과 원본 근거 식별자는 바꾸지 않는다.
 
-현황·원인 분석 보고서는 `shared/hermi-analysis-reports.js`와 `frontend/scripts/hermes_analysis_reports.py`로 연결한다. 첫 관측 보고서 저장 뒤 지역 맥락 조사 API를 호출하며 실패 시 원본과 재시도 버튼을 유지한다. 상단 **저장된 보고서**는 서버 목록·전문·다운로드를 제공하므로 브라우저 대화 기록이 없어도 열람한다. 자세한 범위·검증은 [Step 08](../../agent/docs/implementation/step08/README.md)을 따른다. **③ 복지 매핑은 이번 구현에서 제외한다.**
+현황·원인 분석 보고서는 `shared/hermi-analysis-reports.js`와 `frontend/scripts/hermes_analysis_reports.py`로 연결한다. 첫 관측 보고서 저장 뒤 지역 맥락 조사 API를 호출하며 실패 시 원본과 재시도 버튼을 유지한다. 상단 **저장된 보고서**는 서버 목록·전문·다운로드를 제공하므로 브라우저 대화 기록이 없어도 열람한다. 자세한 범위·검증은 [Step 08](https://github.com/bigcontest-2026/final-server/blob/main/agent/docs/implementation/step08/README.md)을 따른다. **③ 복지 매핑은 이번 구현에서 제외한다.**
 
-대응안 작업 화면은 `shared/hermi-response-workspace.js`·`.css`로 관리한다. 분석의 근거와 선택 요약을 유지하며 초안·의견·복수 선택을 서버에 저장한다. 통합 보고서는 선택한 수정 버전으로 고정하고 독립적으로 재조회한다. `shared/hermi-report-library.css`는 분석/예방 대응 목록과 지역·월 범위, 연결할 분석을 확인하는 선택 창을 제공한다. 지도·전체 복지에서 보고서 조회·연결만으로 외부 조사 모델을 호출하지 않는다. [Step 09](../../agent/docs/implementation/step09/README.md)에 UI·저장 계약과 검증 범위를 기록한다. 가져오기 패치는 새 화면 자산의 연결도 유지한다.
+대응안 작업 화면은 `shared/hermi-response-workspace.js`·`.css`로 관리한다. 분석의 근거와 선택 요약을 유지하며 초안·의견·복수 선택을 서버에 저장한다. 통합 보고서는 선택한 수정 버전으로 고정하고 독립적으로 재조회한다. `shared/hermi-report-library.css`는 분석/예방 대응 목록과 지역·월 범위, 연결할 분석을 확인하는 선택 창을 제공한다. 지도·전체 복지에서 보고서 조회·연결만으로 외부 조사 모델을 호출하지 않는다. [Step 09](https://github.com/bigcontest-2026/final-server/blob/main/agent/docs/implementation/step09/README.md)에 UI·저장 계약과 검증 범위를 기록한다. 가져오기 패치는 새 화면 자산의 연결도 유지한다.
 
 
 2026-10-25 화면 수정: 답변의 제목·본문·하단 행동을 구분하고 `shared/hermi-answer.js`에서 설명 문장의 제목·강조·목록을 안전하게 표시합니다. 대화에서 실제 적용된 성별·연령을 함께 표시하며, 기존 연령 기본값과 분석 범위는 유지합니다.

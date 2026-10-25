@@ -2,20 +2,20 @@
 
 ## 최신 화면 교체 — HERMES Complete
 
-사용자 제공 `HERMES_Complete.html`을 기본 화면으로 적용했다. 기존 모델 API·추천 그래프 연결은 유지한다. 대화·정책 초안·보고서와 자료 출처의 구분은 [Step 06](../../agent/docs/implementation/step06/README.md)을 따른다. 아래 Step 05 화면은 legacy 모드로 남긴 이전 구현이다.
+사용자 제공 `HERMES_Complete.html`을 기본 화면으로 적용했다. 기존 모델 API·추천 그래프 연결은 유지한다. 대화·정책 초안·보고서와 자료 출처의 구분은 [Step 06](https://github.com/bigcontest-2026/final-server/blob/main/agent/docs/implementation/step06/README.md)을 따른다. 아래 Step 05 화면은 legacy 모드로 남긴 이전 구현이다.
 
 ## 최신 결정 — 2026-10-25
 
 분야 필터는 출처별 공식 API 분류를 사용하고 I5 연결은 별도 근거로 표시한다.
 아래 9개 내부 분야 UI·검색 계약은 이전 설계 이력으로 대체된다.
-[새 DB 및 계약의 구현 상태](../../agent/docs/implementation/step02/ERD_V2.md)를 따른다.
-서비스 API와 HERMES 6개 화면은 새 ERD 임시 DB 및 공통 추천 그래프에 연결했다. [Step 05 구현·검증 기록](../../agent/docs/implementation/step05/README.md)을 따른다. 아래 미구현 표시는 초기 설계 당시 이력이다.
+[새 DB 및 계약의 구현 상태](https://github.com/bigcontest-2026/final-server/blob/main/agent/docs/implementation/step02/ERD_V2.md)를 따른다.
+서비스 API와 HERMES 6개 화면은 새 ERD 임시 DB 및 공통 추천 그래프에 연결했다. [Step 05 구현·검증 기록](https://github.com/bigcontest-2026/final-server/blob/main/agent/docs/implementation/step05/README.md)을 따른다. 아래 미구현 표시는 초기 설계 당시 이력이다.
 
 작성일: 2026-10-25 · 팀 공유 및 구현 검토용 · 화면설계서 기반 구현 반영
 
 ## 구현 순서 갱신
 
-에이전트 매핑·사업 검토 코어 → 실제 데이터/복지 DB 어댑터 → 조사 그래프 → 서비스 API → 웹 추천 화면 순으로 구현한다. 현재 에이전트 Step 01의 코어와 합성 시험 8개 통과까지 진행했으며 서비스 실행 코드는 아직 변경하지 않았다. [공통 진행 README](../../agent/docs/implementation/README.md)를 따른다.
+에이전트 매핑·사업 검토 코어 → 실제 데이터/복지 DB 어댑터 → 조사 그래프 → 서비스 API → 웹 추천 화면 순으로 구현한다. 현재 에이전트 Step 01의 코어와 합성 시험 8개 통과까지 진행했으며 서비스 실행 코드는 아직 변경하지 않았다. [공통 진행 README](https://github.com/bigcontest-2026/final-server/blob/main/agent/docs/implementation/README.md)를 따른다.
 
 웹은 서버가 반환한 추천·제외·검증 보류·미확인 조건을 표시하며 분야 판정을 재계산하지 않는다. 현재 범위는 DB 검색과 사업 내용·지역·대상·기간 검토까지다. 지역 U의 실제 원인·개인 욕구를 추가 조사하는 기능은 후속 확장이다.
 
@@ -42,7 +42,7 @@
 - 담당자가 검토할 후보를 제공한다. 개인 진단·수급 확정·자동 연락·자동 신청은 범위 밖이다.
 - 자료가 적어도 보유 근거로 분석한다. 자료 없음·미산출·오류·실제 0을 구분한다.
 
-연계 규칙의 기준 문서는 [에이전트 설계서 v0.3](../../agent/docs/DONGHAENG_AGENT_DESIGN_v0_3.md)이다. 서비스는 위험·매핑 규칙을 별도로 정의하지 않는다.
+연계 규칙의 기준 문서는 [에이전트 설계서 v0.3](https://github.com/bigcontest-2026/final-server/blob/main/agent/docs/DONGHAENG_AGENT_DESIGN_v0_3.md)이다. 서비스는 위험·매핑 규칙을 별도로 정의하지 않는다.
 
 ## 2. 현재 서비스와 목표의 차이
 
@@ -311,10 +311,10 @@ worker 재시작 시 체크포인트에서 이어 가되 버전 고정·중복 �
 ## 12. 근거
 
 - 사용자 제공 `AI에이전트설계.zip` 및 `donghaeng_welfare_mapping_design_v0_2.md`.
-- [에이전트 설계서 v0.3](../../agent/docs/DONGHAENG_AGENT_DESIGN_v0_3.md).
-- [서비스 README](../README.md), [현재 모델 연결 계약](FINAL_MODEL_INTEGRATION.md).
-- [현재 진입점](../backend/app/main.py), [모델 API](../backend/app/final_model_api.py), [기존 조사 API](../backend/app/investigation_api.py), [접근 통제](../backend/app/security.py).
-- [현재 화면](../frontend/src/FinalModelApp.tsx), [기존 조사 계약](../../agent/src/donghaeng_agent/contracts.py).
+- [에이전트 설계서 v0.3](https://github.com/bigcontest-2026/final-server/blob/main/agent/docs/DONGHAENG_AGENT_DESIGN_v0_3.md).
+- [서비스 README](../README.md), [현재 모델 연결 계약](https://github.com/bigcontest-2026/final-server/blob/main/service/docs/FINAL_MODEL_INTEGRATION.md).
+- [현재 진입점](https://github.com/bigcontest-2026/final-server/blob/main/service/backend/app/main.py), [모델 API](https://github.com/bigcontest-2026/final-server/blob/main/service/backend/app/final_model_api.py), [기존 조사 API](https://github.com/bigcontest-2026/final-server/blob/main/service/backend/app/investigation_api.py), [접근 통제](https://github.com/bigcontest-2026/final-server/blob/main/service/backend/app/security.py).
+- [현재 화면](../frontend/src/FinalModelApp.tsx), [기존 조사 계약](https://github.com/bigcontest-2026/final-server/blob/main/agent/src/donghaeng_agent/contracts.py).
 
 외부 API 최신 사양·법적 요건·운영 배포 완료를 주장하는 문서가 아니다. 현재 확인한 로컬 코드와 제공 설계 자료를 기준으로 작성했다.
 

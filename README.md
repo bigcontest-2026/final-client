@@ -83,11 +83,12 @@ python3 scripts/build_i5_fixtures.py <final-server 경로>/model/data/i5/nationa
 
 ## 🚀 배포
 
-`.github/workflows/deploy-pages.yml`은 수동 실행(`workflow_dispatch`)으로 `final` 화면을 GitHub Pages에 빌드합니다. 경로는 `/final-client/`입니다. 실행 전에 다음이 필요합니다.
+`.github/workflows/deploy-pages.yml`은 수동 실행(`workflow_dispatch`)으로 `final` 화면을 GitHub Pages에 빌드합니다. 경로는 `/final-client/`입니다. 워크플로가 돌려면 다음이 필요합니다.
 
-- 저장소 변수 `VITE_MODEL_API_BASE_URL`: 배포된 final-server의 HTTPS 주소
-- final-server의 `CORS_ORIGINS`에 Pages 주소 등록
+- 저장소 변수 `VITE_MODEL_API_BASE_URL`: 없으면 빌드 전에 중단합니다.
 - 저장소 설정에서 Pages 소스를 GitHub Actions로 지정
+
+**이것만으로는 화면이 서버에 붙지 않습니다.** 기본 `final` 화면은 `shared/hermes-complete.html`로 넘어가고, 이 화면과 `shared/hermi-*.js`는 `/api/...`를 페이지와 같은 출처(origin)로 호출합니다. `VITE_MODEL_API_BASE_URL`은 `/?mode=legacy` 화면(`frontend/src/finalModel.ts`)에만 적용됩니다. 그래서 Pages(`github.io`)에 올리면 `/api` 요청이 Pages로 가서 404가 납니다. 실제로 쓰려면 화면과 `/api`를 같은 도메인에서 서비스하고, `/api`를 final-server로 넘기는 리버스 프록시(reverse proxy)를 두어야 합니다. 화면 코드가 별도 API 주소를 읽도록 바꾸는 방법도 있습니다. 화면과 서버의 도메인이 다르면 final-server의 `CORS_ORIGINS`에 화면 주소를 등록합니다.
 
 로컬 변경만으로 원격 사이트가 바뀌지 않습니다.
 
