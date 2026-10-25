@@ -1,0 +1,3 @@
+* text=auto
+shared/hermes-complete.html -text -diff
+frontend/tests/fixtures/** -text -diff
