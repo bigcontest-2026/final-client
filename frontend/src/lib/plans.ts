@@ -1,5 +1,6 @@
 import type { Plan, PlanInput, ReviewEntry, ReviewKey, ProgramReference } from '../api/types'
 import { REVIEW_KEYS, REVIEW_LABELS } from './labels'
+import { cleanPlanningDetails, PLANNING_FIELDS } from './planning'
 
 export interface DraftPlan extends PlanInput {
   localId: string
@@ -47,6 +48,7 @@ export function toPlanInput(plan: PlanInput): PlanInput {
     })),
   }
   if (plan.plan_id) input.plan_id = plan.plan_id
+  if (plan.planning_details !== undefined) input.planning_details = cleanPlanningDetails(plan.planning_details)
   return input
 }
 
@@ -90,6 +92,15 @@ export function validatePlans(plans: DraftPlan[]): PlanProblem[] {
       const review = plan.policy_review?.[key]
       if (review?.status === 'confirmed' && (!review.text.trim() || !review.evidence.trim())) {
         problems.push({ localId: plan.localId, message: `"확인함"으로 바꾼 ${REVIEW_LABELS[key]} 항목에는 확인 내용과 근거를 모두 적어야 합니다.` })
+      }
+    }
+    for (const { key, label } of PLANNING_FIELDS) {
+      const entry = plan.planning_details?.[key]
+      if (entry?.status === 'confirmed' && (!entry.text.trim() || !entry.evidence.trim())) {
+        problems.push({ localId: plan.localId, message: `${label}: 확인 내용과 근거를 모두 적어 주세요.` })
+      }
+      if (entry?.status === 'not_applicable' && !entry.text.trim()) {
+        problems.push({ localId: plan.localId, message: `${label}: 해당 없음의 이유를 적어 주세요.` })
       }
     }
   }

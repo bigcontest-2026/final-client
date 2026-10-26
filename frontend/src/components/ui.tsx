@@ -241,7 +241,7 @@ export function Tabs<T extends string>({ value, onChange, items }: { value: T; o
           disabled={item.disabled}
           onClick={() => onChange(item.value)}
           className={`min-h-8 rounded-[10px] px-4 py-1.5 text-footnote font-medium transition-quick ${
-            value === item.value ? 'bg-elevated text-label shadow-[0_1px_4px_rgb(0_0_0/0.12)]' : 'text-label-secondary hover:text-label disabled:opacity-40'
+            value === item.value ? 'bg-elevated text-label shadow-(--shadow-tab)' : 'text-label-secondary hover:text-label disabled:opacity-40'
           }`}
         >
           {item.label}

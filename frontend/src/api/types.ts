@@ -231,6 +231,21 @@ export type PlanKind = 'existing_program' | 'program_improvement' | 'new_program
 export type ReviewKey = 'eligibility' | 'support_content' | 'delivery' | 'finance_and_cost'
 export type ReviewStatus = 'unconfirmed' | 'confirmed' | 'not_applicable'
 
+export interface PlanningEntry extends ReviewEntry {
+  owner: string
+  next_action: string
+}
+
+export type PlanningKey = 'goal' | 'alternatives' | 'service_function' | 'service_scope' | 'selection_requirements' | 'availability' | 'access_and_cost' | 'execution' | 'scale' | 'budget' | 'funding' | 'evaluation' | 'decisions' | 'sources' | 'institutional_conditions' | 'resident_feedback'
+export type PlanningDetails = Partial<Record<PlanningKey, PlanningEntry>>
+export interface ReportDocument {
+  version: string
+  title: string
+  subtitle: string
+  metadata: { label: string; value: string }[]
+  sections: { id: string; title: string; paragraphs: string[] }[]
+}
+
 export interface ReviewEntry {
   status: ReviewStatus
   text: string
@@ -264,6 +279,7 @@ export interface PlanInput {
   program_reference?: ProgramReference | null
   policy_review?: Partial<Record<ReviewKey, ReviewEntry>>
   support_needs?: SupportNeedEntry[]
+  planning_details?: PlanningDetails
 }
 
 export interface Plan extends PlanInput {
@@ -301,6 +317,7 @@ export interface Workspace {
 }
 
 export interface ResponseReport extends ResponseReportSummary {
+  document?: ReportDocument
   schema_version: string
   selected_plans: Plan[]
   analysis_snapshot: AnalysisReport
@@ -316,7 +333,7 @@ export interface ResponseReportList extends ListResponse {
 export interface AssistResponse {
   mode: 'draft' | 'revise' | 'review'
   kind: PlanKind
-  suggestion: Pick<PlanInput, 'title' | 'target' | 'rationale' | 'content' | 'checks'> | null
+  suggestion: Pick<PlanInput, 'title' | 'target' | 'rationale' | 'content' | 'checks' | 'planning_details'> | null
   review_notes: string[]
   status: string
   limitations: string[]

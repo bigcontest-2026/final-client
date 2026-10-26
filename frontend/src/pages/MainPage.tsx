@@ -23,7 +23,7 @@ export function MainPage() {
   const [question, setQuestion] = useState('')
   const [provinceCode, setProvinceCode] = useState('')
   const [regionCode, setRegionCode] = useState('')
-  const [ageCode, setAgeCode] = useState<AgeCode | ''>('20G')
+  const [ageCode, setAgeCode] = useState<AgeCode | ''>('')
   const [running, setRunning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const lastDong = useMemo(() => readJson<{ code: string; name: string } | null>(LAST_DONG_KEY, null), [])
@@ -100,7 +100,7 @@ export function MainPage() {
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
           rows={3}
-          placeholder="예: 춘천시 20대의 활동 변화를 분석해 줘"
+          placeholder="예: 서울시 강남구20대의 활동 변화를 분석해 줘"
           aria-label="헤르미에게 질문하기"
           className="w-full resize-y rounded-card-sm bg-fill px-5 py-4 text-body text-label placeholder:text-label-secondary transition-quick focus:bg-field focus:ring-4 focus:ring-accent-tint focus:outline-none"
         />
@@ -207,7 +207,7 @@ export function MainPage() {
             <li>지원 필요·자격·접수 여부는 확인되지 않은 상태가 기본입니다. 최종 판단은 담당자가 합니다.</li>
           </ul>
         </details>
-        <p className="mt-6 text-center text-subhead text-label-secondary">확인한 자료를 바탕으로, 최종 판단은 담당자와 함께해요.</p>
+        {/* <p className="mt-6 text-center text-subhead text-label-secondary">확인한 자료를 바탕으로, 최종 판단은 담당자와 함께해요.</p> */}
       </section>
     </div>
   )

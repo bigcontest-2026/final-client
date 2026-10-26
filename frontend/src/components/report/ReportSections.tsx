@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { errorMessage } from '../../api/client'
 import { requestActivitySummary } from '../../api/summary'
 import type { AnalysisReport, ContextInvestigation, LifecycleInterpretation, ReportAssessment, SourceKey } from '../../api/types'
@@ -16,16 +16,22 @@ function thresholdText(value: boolean | null | undefined): string {
 }
 
 export function AiSummaryPanel({ report }: { report: AnalysisReport }) {
-  const [state, setState] = useState<{ loading: boolean; text: string | null; error: string | null }>({ loading: true, text: null, error: null })
+  const generation = useRef(0)
+  const [result, setState] = useState<{ reportId: string; loading: boolean; text: string | null; error: string | null }>({ reportId: report.report_id, loading: true, text: null, error: null })
+  const state = result.reportId === report.report_id ? result : { loading: true, text: null, error: null }
 
   const run = useCallback(() => {
-    setState({ loading: true, text: null, error: null })
+    const current = ++generation.current
+    setState({ reportId: report.report_id, loading: true, text: null, error: null })
     requestActivitySummary(report)
-      .then((text) => setState({ loading: false, text, error: null }))
-      .catch((reason) => setState({ loading: false, text: null, error: errorMessage(reason) }))
+      .then((text) => { if (generation.current === current) setState({ reportId: report.report_id, loading: false, text, error: null }) })
+      .catch((reason) => { if (generation.current === current) setState({ reportId: report.report_id, loading: false, text: null, error: errorMessage(reason) }) })
   }, [report])
 
-  useEffect(run, [run])
+  useEffect(() => {
+    run()
+    return () => { generation.current++ }
+  }, [run])
 
   return (
     <section className="rounded-card-sm bg-elevated px-5 py-4">
@@ -210,13 +216,12 @@ export function InvestigationResult({ investigation }: { investigation: ContextI
     <section className="flex flex-col gap-4 rounded-card-sm bg-elevated px-5 py-4 text-subhead">
       <div className="flex items-center gap-2">
         <h4 className="text-headline text-label">지역 맥락·원인 조사</h4>
-        {investigation.status === 'no_evidence' && <Badge>근거를 찾지 못함</Badge>}
+        {investigation.status === 'no_evidence' && <Badge>추가 자료 없음</Badge>}
       </div>
       {investigation.summary && <p>{investigation.summary}</p>}
-      {investigation.status === 'no_evidence' && <p className="text-label-secondary">근거를 찾지 못했다는 뜻이며, 원인이 없다는 뜻은 아닙니다.</p>}
       {!!investigation.observed_context?.length && (
         <div>
-          <div className="font-semibold">출처가 뒷받침하는 지역 맥락</div>
+          <div className="font-semibold">지역에서 살펴본 내용</div>
           <ul className="mt-1 list-disc space-y-1 pl-5">
             {investigation.observed_context.map((item) => (
               <li key={item.text}>
@@ -229,7 +234,7 @@ export function InvestigationResult({ investigation }: { investigation: ContextI
       {!!investigation.possible_causes?.length && (
         <div>
           <div className="flex items-center gap-2 font-semibold">
-            가능한 원인 <Badge tone="amber">가설 · 확정 아님</Badge>
+            가능한 배경
           </div>
           <ul className="mt-2 flex flex-col gap-2">
             {investigation.possible_causes.map((cause) => (

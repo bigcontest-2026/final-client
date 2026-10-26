@@ -2,15 +2,16 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { ApiError, errorMessage } from '../../api/client'
 import { api } from '../../api/endpoints'
 import type { PlanKind, ResponseReport, WelfareProgram, Workspace } from '../../api/types'
-import { downloadText } from '../../lib/download'
-import { PLAN_KINDS, PLAN_KIND_LABELS, REVIEW_KEYS, scopeLine } from '../../lib/labels'
+import { ReportDownload } from '../report/ReportDownload'
+import { PLAN_KIND_LABELS, REVIEW_KEYS, scopeLine } from '../../lib/labels'
 import { emptyPolicyReview, fromServerPlan, isDirty, newLocalId, toPlanInput, validatePlans, type DraftPlan } from '../../lib/plans'
 import { readJson, removeKey, writeJson } from '../../lib/storage'
 import { useApi } from '../../lib/useApi'
 import { Icon } from '../icons'
-import { Badge, Button, ErrorBox, Modal, ModalHeader, Notice, Select, Spinner, Tabs, TextArea, Thinking } from '../ui'
+import { Button, ErrorBox, Modal, ModalHeader, Notice, Spinner, Tabs } from '../ui'
 import { FinalReportView } from './FinalReportView'
 import { PlanForm } from './PlanForm'
+import { AiProposalPanel } from './AiProposalPanel'
 
 interface StoredDraft {
   baseVersion: number
@@ -318,7 +319,7 @@ export function ResponseEditorModal({
             </aside>
             <div className="bg-canvas">
               <div className="mx-auto flex w-full max-w-[940px] flex-col gap-6 px-5 py-8 sm:px-8">
-                <AiDraftBox analysisReportId={analysisReportId} onDraft={(plan) => { addPlan(plan); setBanner({ tone: 'info', text: 'AI 초안을 새 대응안으로 넣었습니다. 검토하고 다듬은 뒤 저장해 주세요.' }) }} />
+                <AiProposalPanel key={active?.localId ?? "empty"} active={active} onUpdate={patch => active && updatePlan(active.localId, patch)} analysisReportId={analysisReportId} onDraft={(plan) => { addPlan(plan); setBanner({ tone: 'info', text: 'AI 초안을 새 대응안으로 넣었습니다. 검토하고 다듬은 뒤 저장해 주세요.' }) }} />
                 {active ? (
                   <PlanForm plan={active} onChange={(patch) => updatePlan(active.localId, patch)} onRemove={active.plan_id ? undefined : () => removePlan(active.localId)} />
                 ) : (
@@ -364,10 +365,7 @@ export function ResponseEditorModal({
         <div className="flex gap-2">
           <Button onClick={() => onBackToAnalysis(analysisReportId)}>분석으로 돌아가기</Button>
           {tab === 'final' ? (
-            <Button variant="primary" disabled={!finalReport} onClick={() => finalReport && downloadText(finalReport.filename, finalReport.markdown)}>
-              <Icon name="download" />
-              보고서 내려받기
-            </Button>
+            <ReportDownload reportId={finalReport?.report_id} filename={finalReport?.filename} disabled={!finalReport} />
           ) : dirty ? (
             <Button variant="primary" onClick={save} disabled={busy !== null}>
               {busy === 'save' ? '저장하는 중…' : '변경 내용 저장'}
@@ -401,79 +399,5 @@ function LatestReport({ workspace, onLoaded }: { workspace: Workspace; onLoaded:
   if (loading) return <Spinner label="최근 보고서를 불러오는 중" />
   if (error) return <ErrorBox message={error} onRetry={reload} />
   return null
-}
-
-function AiDraftBox({ analysisReportId, onDraft }: { analysisReportId: string; onDraft: (plan: DraftPlan) => void }) {
-  const [instruction, setInstruction] = useState('')
-  const [kind, setKind] = useState<PlanKind>('existing_program')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [notes, setNotes] = useState<string[]>([])
-
-  const request = async () => {
-    setLoading(true)
-    setError(null)
-    setNotes([])
-    try {
-      const result = await api.assist(analysisReportId, { mode: 'draft', kind, instruction: instruction.trim() })
-      setNotes([...result.review_notes, ...result.limitations])
-      if (result.suggestion) {
-        onDraft({ ...blankPlan(kind), ...result.suggestion, kind })
-        setInstruction('')
-      } else {
-        setError('AI가 초안을 돌려주지 않았습니다. 요청을 바꿔 다시 시도해 주세요.')
-      }
-    } catch (reason) {
-      setError(errorMessage(reason))
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return (
-    <section className="rounded-card bg-elevated p-6">
-      <div className="flex items-center gap-2">
-        <Icon name="spark" className="size-4 text-link" />
-        <h3 className="text-headline text-label">AI에게 초안 요청하기</h3>
-        <Badge tone="amber">검토 초안</Badge>
-      </div>
-      <TextArea
-        className="mt-3"
-        rows={3}
-        maxLength={2000}
-        value={instruction}
-        placeholder="예: 이 분석에 맞는 대응안 초안을 제안해 줘"
-        onChange={(event) => setInstruction(event.target.value)}
-        aria-label="AI 초안 요청 내용"
-      />
-      <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
-        <div className="w-44">
-          <Select value={kind} onChange={(event) => setKind(event.target.value as PlanKind)} aria-label="초안 유형">
-            {PLAN_KINDS.map((value) => (
-              <option key={value} value={value}>
-                {PLAN_KIND_LABELS[value]}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <Button onClick={request} disabled={loading || !instruction.trim()}>
-          초안 제안받기
-        </Button>
-      </div>
-      {loading && <Thinking label="헤르미가 분석에 맞는 초안을 쓰고 있어요. 1분 넘게 걸릴 수 있어요." />}
-      {error && (
-        <div className="mt-3">
-          <ErrorBox message={error} />
-        </div>
-      )}
-      {notes.length > 0 && (
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-footnote text-label-secondary">
-          {notes.map((note) => (
-            <li key={note}>{note}</li>
-          ))}
-        </ul>
-      )}
-    </section>
-  )
 }
 
