@@ -50,6 +50,10 @@ export interface I5Record {
   region_name: string
   month: string
   i5_reference: number | null
+  i5_display_score?: number | null
+  i5_z?: number | null
+  i5_display_clipped?: boolean | null
+  i5_display_reference_version?: string
   domain_scores: Record<'E' | 'P' | 'O' | 'C' | 'U', number> | null
   group_weights: Record<string, number> | null
   population_total: number | null

@@ -1,3 +1,4 @@
+import { displayScore, INDEX_SOURCE_NOTE } from '../../lib/indexScale'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { errorMessage } from '../../api/client'
 import { requestActivitySummary } from '../../api/summary'
@@ -166,15 +167,15 @@ export function RegionBackground({ report }: { report: AnalysisReport }) {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <div className="font-semibold text-label">I5 참고지수 {i5 ? formatIndex(i5.i5_reference) : ''}</div>
+        <div className="font-semibold text-label">I5 표시점수 {formatIndex(displayScore(i5)) || '자료 없음'}{displayScore(i5) !== null ? '/10' : ''}</div>
         {i5 ? (
           <>
-            <p className="mt-1 text-footnote text-label-secondary">전국 설문의 집단별 평균을 이 지역 인구구성으로 가중한 참고값입니다. 지역에서 직접 조사한 값이나 고립률이 아닙니다.</p>
+            <p className="mt-1 text-footnote text-label-secondary">{INDEX_SOURCE_NOTE}. 지역에서 직접 조사한 값·고립률·위험등급이 아닙니다.</p>
             {i5.domain_scores && (
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="mt-2 flex flex-wrap gap-2" aria-label="영역별 참고점수 (0~100점)">
                 {Object.entries(i5.domain_scores).map(([key, value]) => (
                   <span key={key} className="rounded-full bg-fill px-2.5 py-1 text-footnote tabular-nums">
-                    {DOMAIN_LABELS[key] ?? key} {formatIndex(value)}
+                    {DOMAIN_LABELS[key] ?? key} {formatIndex(value)}/100
                   </span>
                 ))}
               </div>

@@ -8,7 +8,7 @@ import { KoreaMap } from '../components/dashboard/KoreaMap'
 import { Icon } from '../components/icons'
 import { Accordion, Badge, Button, ErrorBox, Field, PageHeader, Select, Spinner, TextInput, Thinking } from '../components/ui'
 import { formatIndex, formatNumber, formatPercent } from '../lib/format'
-import { INDEX_BINS, INDEX_NAME, INDEX_SOURCE_NOTE, NO_VALUE_FILL, fillFor, weightedAverage } from '../lib/indexScale'
+import { INDEX_BINS, INDEX_NAME, INDEX_SOURCE_NOTE, NO_VALUE_FILL, fillFor, displayScore, provinceDisplayScore } from '../lib/indexScale'
 import { AGE_CODES, AGE_LABELS, CATEGORY_ORDER, CATEGORY_TONE, SEX_LABELS, ageLabel, monthLabel } from '../lib/labels'
 import { latestMonth, loadDongs, useHealth, useRegionCatalog } from '../lib/regions'
 import { useApi } from '../lib/useApi'
@@ -70,14 +70,14 @@ export function DashboardPage() {
 
   useEffect(() => setLimit(LIST_STEP), [search, month])
 
-  const dongValues = useMemo(() => new Map(dongs.map((dong) => [dong.dong_code ?? '', dong.i5_reference])), [dongs])
+  const dongValues = useMemo(() => new Map(dongs.map((dong) => [dong.dong_code ?? '', displayScore(dong)])), [dongs])
   const sidoValues = useMemo(() => {
-    const groups = new Map<string, { value: number | null; weight: number | null }[]>()
+    const groups = new Map<string, I5Record[]>()
     for (const dong of dongs) {
       const code = dong.region_code.slice(0, 2)
-      groups.set(code, [...(groups.get(code) ?? []), { value: dong.i5_reference, weight: dong.population_total }])
+      groups.set(code, [...(groups.get(code) ?? []), dong])
     }
-    return new Map([...groups.entries()].map(([code, items]) => [code, weightedAverage(items)]))
+    return new Map([...groups.entries()].map(([code, items]) => [code, provinceDisplayScore(items)]))
   }, [dongs])
 
   const activityRegions = new Set(behaviorRecords.map((record) => record.behavior.key.region_code))
@@ -173,8 +173,8 @@ export function DashboardPage() {
                         </span>
                       </span>
                       <span className="flex shrink-0 items-center gap-1.5" title={INDEX_NAME}>
-                        <span className="size-2.5 rounded-full" style={{ background: fillFor(dong.i5_reference) }} aria-hidden="true" />
-                        <span className="text-subhead font-semibold text-label tabular-nums">{formatIndex(dong.i5_reference)}</span>
+                        <span className="size-2.5 rounded-full" style={{ background: fillFor(displayScore(dong)) }} aria-hidden="true" />
+                        <span className="text-subhead font-semibold text-label tabular-nums">{formatIndex(displayScore(dong))}</span>
                       </span>
                     </button>
                   </li>
@@ -252,7 +252,7 @@ export function DashboardPage() {
                   </span>
                 </div>
                 <p className="text-caption text-label-secondary">
-                  {mapProvince ? '행정동' : '시도(행정동 인구 가중 평균)'} · {INDEX_SOURCE_NOTE}
+                  {mapProvince ? '행정동' : '시도(행정동 성인 인구 가중 집계)'} · {INDEX_SOURCE_NOTE}
                 </p>
                 <p className="text-caption text-label-secondary">
                   경계: 통계청 SGIS /{' '}
@@ -273,7 +273,7 @@ export function DashboardPage() {
 
       <Accordion title="행정동 자료는 어떻게 표시하나요?">
         <ul className="list-disc space-y-2 pl-5">
-          <li>{INDEX_NAME}는 I5 참고지수입니다. 전국 설문의 집단별 평균을 그 동의 인구구성으로 가중한 값이며, 그 동에서 직접 조사한 값이나 고립률이 아닙니다.</li>
+          <li>{INDEX_NAME}는 I5의 0~10 표시점수입니다. 전국 설문과 지역 인구구성으로 계산한 참고값을 2025년 12월 시군구 기준으로 변환했습니다. 5점은 기준 평균이며, 지역 직접 조사값·고립률·위험등급이 아닙니다.</li>
           <li>통신·카드 활동 자료는 시군구 단위로만 있습니다. 동을 골라도 상위 시군구의 값을 참고로 보여 주며, 동별로 나누거나 더하지 않습니다.</li>
           <li>5% 감소 분류는 검토 순서를 정하는 표시일 뿐입니다. 고립 판정이나 경보가 아닙니다.</li>
           <li>활동 자료는 지금 서울 강남구와 춘천시만 연결되어 있습니다. 다른 지역은 활동 참고가 비어 있는 것이 정상입니다.</li>
@@ -373,8 +373,8 @@ function DongDetail({
       <div className="rounded-card-sm bg-fill p-5">
         <div className="text-footnote text-label-secondary">{INDEX_NAME}</div>
         <div className="mt-1 flex items-center gap-2">
-          <span className="size-3 rounded-full" style={{ background: fillFor(dong.i5_reference) }} aria-hidden="true" />
-          <span className="text-title-1 text-label tabular-nums">{formatIndex(dong.i5_reference) || '값 없음'}</span>
+          <span className="size-3 rounded-full" style={{ background: fillFor(displayScore(dong)) }} aria-hidden="true" />
+          <span className="text-title-1 text-label tabular-nums">{formatIndex(displayScore(dong)) || '값 없음'}</span>
         </div>
         <p className="mt-1 text-footnote text-label-secondary">동의 인구구성으로 가중한 지역 전체 참고값입니다.</p>
         <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-separator pt-3 text-subhead">
