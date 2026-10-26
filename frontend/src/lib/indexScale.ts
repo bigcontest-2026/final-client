@@ -23,10 +23,20 @@ export function displayScore(record: { i5_display_score?: number | null } | null
   return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 10 ? value : null
 }
 
-// Same frozen model reference; aggregate raw adult-weighted scores before clipping.
-export function provinceDisplayScore(records: Pick<I5Record, 'i5_reference' | 'population_20plus'>[]): number | null {
+const LEGACY_REFERENCE_VERSION = 'i5_sgg_202512_equal_weight_v1'
+const DISPLAY_REFERENCES = new Map<string, { mean: number; standardDeviation: number }>([
+  [LEGACY_REFERENCE_VERSION, { mean: 35.22968484607534, standardDeviation: 0.8623201205529184 }],
+  ['i5_10group_sgg_202512_equal_weight_v1', { mean: 35.24084915654042, standardDeviation: 0.8708522905523021 }],
+])
+
+// Use one matching frozen model reference; aggregate raw adult-weighted scores before clipping.
+export function provinceDisplayScore(records: Pick<I5Record, 'i5_reference' | 'population_20plus' | 'i5_display_reference_version'>[]): number | null {
+  const versions = new Set(records.map((row) => row.i5_display_reference_version ?? LEGACY_REFERENCE_VERSION))
+  if (versions.size !== 1) return null
+  const reference = DISPLAY_REFERENCES.get([...versions][0])
+  if (!reference) return null
   const raw = weightedAverage(records.map((row) => ({ value: row.i5_reference, weight: row.population_20plus })))
-  return raw === null ? null : Math.max(0, Math.min(10, 5 + (raw - 35.22968484607534) / 0.8623201205529184))
+  return raw === null ? null : Math.max(0, Math.min(10, 5 + (raw - reference.mean) / reference.standardDeviation))
 }
 
 export const NO_VALUE_FILL = 'var(--map-none)'

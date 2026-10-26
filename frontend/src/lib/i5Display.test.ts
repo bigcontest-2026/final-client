@@ -23,6 +23,34 @@ describe('I5 display score', () => {
     expect(provinceDisplayScore([])).toBeNull()
   })
 
+  it('uses the ten-group reference when aggregating ten-group records', () => {
+    // Raw values are five standard deviations below/above the ten-group mean.
+    expect(provinceDisplayScore([
+      { i5_reference: 30.88658770377891, population_20plus: 1, i5_display_reference_version: 'i5_10group_sgg_202512_equal_weight_v1' },
+      { i5_reference: 39.59511060930193, population_20plus: 3, i5_display_reference_version: 'i5_10group_sgg_202512_equal_weight_v1' },
+    ])).toBeCloseTo(7.5, 10)
+  })
+
+  it('keeps the historical reference for explicit legacy and unversioned records', () => {
+    expect(provinceDisplayScore([
+      { i5_reference: 30.918084243310748, population_20plus: 1, i5_display_reference_version: 'i5_sgg_202512_equal_weight_v1' },
+      { i5_reference: 39.54128544883993, population_20plus: 3 },
+    ])).toBeCloseTo(7.5, 10)
+  })
+
+  it.each(['i5_sgg_202512_equal_weight_v1', undefined])('rejects ten-group records mixed with %s references', (version) => {
+    expect(provinceDisplayScore([
+      { i5_reference: 35.24084915654042, population_20plus: 1, i5_display_reference_version: 'i5_10group_sgg_202512_equal_weight_v1' },
+      { i5_reference: 35.22968484607534, population_20plus: 1, i5_display_reference_version: version },
+    ])).toBeNull()
+  })
+
+  it.each(['unknown_reference', 'toString', '__proto__'])('does not apply a known scale to unknown reference %s', (version) => {
+    expect(provinceDisplayScore([
+      { i5_reference: 35.24, population_20plus: 1, i5_display_reference_version: version },
+    ])).toBeNull()
+  })
+
   it('shows a ten-point total and retains the domain hundred-point unit', () => {
     const report = { scope: {}, context: { i5: { record: { i5_reference: 34.44, i5_display_score: 4.08,
       domain_scores: { E: 54.3 } } } } } as unknown as AnalysisReport
