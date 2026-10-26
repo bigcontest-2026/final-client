@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ApiError, errorMessage } from '../../api/client'
 import { api } from '../../api/endpoints'
 import type { AnalysisReport, AnalysisReportSummary } from '../../api/types'
-import { downloadText } from '../../lib/download'
+import { ReportDownload } from './ReportDownload'
 import { INVESTIGATION_STATUS_LABELS, monthLabel, scopeGroupLabel, scopeLine } from '../../lib/labels'
 import { useApi } from '../../lib/useApi'
 import { Markdown } from '../Markdown'
@@ -164,10 +164,7 @@ export function AnalysisDetail({
               <Icon name="pen" />
               대응안 검토
             </Button>
-            <Button onClick={() => downloadText(analysisFilename(report), report.markdown)}>
-              <Icon name="download" />
-              보고서 내려받기
-            </Button>
+            <ReportDownload kind="analysis" reportId={report.report_id} filename={analysisFilename(report)} />
             <Button onClick={() => setComparing(true)} disabled={investigating || !canInvestigate}>
               다른 지역과 비교 조사
             </Button>

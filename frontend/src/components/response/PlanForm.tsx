@@ -2,6 +2,7 @@ import type { PlanKind, ReviewEntry, ReviewKey, ReviewStatus } from '../../api/t
 import { PLAN_KINDS, PLAN_KIND_LABELS, REVIEW_KEYS, REVIEW_LABELS, REVIEW_STATUS_LABELS } from '../../lib/labels'
 import { EMPTY_REVIEW, type DraftPlan } from '../../lib/plans'
 import { Accordion, Button, Field, Select, TextArea, TextInput } from '../ui'
+import { PlanningForm } from './PlanningForm'
 
 const REVIEW_TONE: Record<ReviewStatus, string> = {
   unconfirmed: 'bg-fill text-label-secondary',
@@ -57,6 +58,8 @@ export function PlanForm({
         </div>
       )}
 
+      <div className="flex flex-col gap-5">
+      <h4 className="text-headline text-label">기본 내용</h4>
       <Field label="대응안 이름" required>
         {(id) => <TextInput id={id} value={plan.title} maxLength={200} onChange={(event) => onChange({ title: event.target.value })} />}
       </Field>
@@ -85,6 +88,9 @@ export function PlanForm({
       <Field label="실행 전 확인할 사항">
         {(id) => <TextArea id={id} rows={3} maxLength={4000} value={plan.checks} onChange={(event) => onChange({ checks: event.target.value })} />}
       </Field>
+      </div>
+
+      <PlanningForm kind={plan.kind} details={plan.planning_details} onChange={planning_details => onChange({ planning_details })} />
 
       <div className="flex flex-col gap-3 rounded-card-sm bg-fill p-5">
         <h4 className="text-headline text-label">사업 적용 전 네 가지 검토</h4>

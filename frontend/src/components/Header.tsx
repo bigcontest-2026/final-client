@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import logo from '../assets/hermi/hermi-4.png'
 import { useModals } from '../state/modals'
 import { Icon } from './icons'
+import { ThemePicker } from './ThemePicker'
 
 const NAV = [
   { to: '/', label: '헤르미와 대화', end: true },
@@ -17,10 +18,10 @@ export function GlobalNav() {
 
   return (
     <header className="glass sticky top-0 z-40 border-b border-separator">
-      <div className="mx-auto flex max-w-[1240px] flex-wrap items-center gap-x-6 px-gutter md:h-14 md:flex-nowrap">
-        <NavLink to="/" aria-label="HERMES 홈" className="flex h-13 shrink-0 items-center gap-2 md:h-auto">
+      <div className="mx-auto flex max-w-[1240px] flex-wrap items-center gap-x-3 px-gutter md:h-14 md:flex-nowrap md:gap-x-6">
+        <NavLink to="/" aria-label="HERMESd 홈" className="flex h-13 shrink-0 items-center gap-2 md:h-auto">
           <img src={logo} alt="" className="size-8" />
-          <span className="text-headline tracking-[0.06em] text-label">HERMES</span>
+          <span className="text-headline tracking-[0.06em] text-label">동행 관측소</span>
         </NavLink>
         <nav aria-label="주 메뉴" className="order-last -mx-gutter flex w-[calc(100%+2*var(--spacing-gutter))] min-w-0 gap-1 overflow-x-auto px-gutter pb-2.5 md:order-none md:mx-0 md:w-auto md:flex-1 md:px-0 md:pb-0">
           {NAV.map((item) => (
@@ -32,14 +33,18 @@ export function GlobalNav() {
             저장된 보고서
           </button>
         </nav>
-        <button
-          type="button"
-          onClick={() => open({ type: 'history' })}
-          className="ml-auto flex min-h-9 items-center gap-1.5 rounded-full px-3 text-subhead text-link transition-quick hover:bg-accent-tint"
-        >
-          <Icon name="history" className="size-[18px]" />
-          대화 이력
-        </button>
+        <div className="ml-auto flex shrink-0 items-center gap-1">
+          <ThemePicker />
+          <button
+            type="button"
+            aria-label="대화 이력"
+            onClick={() => open({ type: 'history' })}
+            className="flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-full px-2 text-subhead text-link transition-quick hover:bg-accent-tint sm:px-3"
+          >
+            <Icon name="history" className="size-[18px]" />
+            <span className="hidden sm:inline">대화 이력</span>
+          </button>
+        </div>
       </div>
     </header>
   )

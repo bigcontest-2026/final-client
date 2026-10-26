@@ -1,7 +1,7 @@
 import { useEffect, useId, useState, type ReactNode } from 'react'
 import { api } from '../api/endpoints'
 import type { AnalysisReport } from '../api/types'
-import { downloadText } from '../lib/download'
+import { ReportDownload } from './report/ReportDownload'
 import { formatDateTime } from '../lib/format'
 import { scopeLine } from '../lib/labels'
 import { useApi } from '../lib/useApi'
@@ -10,7 +10,7 @@ import { AnalysisCardList, useAnalysisList, type AnalysisListFilter } from './re
 import { AnalysisDetail } from './report/AnalysisDetail'
 import { FinalReportView } from './response/FinalReportView'
 import { Icon } from './icons'
-import { Badge, Button, EmptyState, ErrorBox, Modal, ModalHeader, Notice, Spinner, Tabs } from './ui'
+import { Badge, EmptyState, ErrorBox, Modal, ModalHeader, Notice, Spinner, Tabs } from './ui'
 
 export function SavedReportsModal({
   initialTab = 'analysis',
@@ -158,10 +158,7 @@ function ResponseDetail({ reportId }: { reportId: string }) {
     <div className="flex flex-col gap-5">
       <FinalReportView report={data} />
       <div className="glass sticky bottom-0 -mx-5 flex justify-end border-t border-separator px-5 py-3 sm:-mx-8 sm:px-8">
-        <Button variant="primary" onClick={() => downloadText(data.filename, data.markdown)}>
-          <Icon name="download" />
-          보고서 내려받기
-        </Button>
+        <ReportDownload reportId={data.report_id} filename={data.filename} />
       </div>
     </div>
   )

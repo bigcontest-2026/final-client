@@ -1,5 +1,6 @@
 import { geoMercator, geoPath, type GeoPermissibleObjects } from 'd3-geo'
 import { useEffect, useMemo, useState } from 'react'
+import { formatIndex } from '../../lib/format'
 import { fillFor } from '../../lib/indexScale'
 import { Spinner } from '../ui'
 
@@ -140,7 +141,7 @@ export function KoreaMap({
             className="cursor-pointer stroke-(--map-stroke) transition-opacity duration-200 ease-out hover:opacity-80"
             onClick={() => onSelectProvince(feature.properties.sido)}
           >
-            <title>{feature.properties.sidonm}</title>
+            <title>{feature.properties.sidonm} · I5 {formatIndex(sidoValues.get(feature.properties.sido)) ? `${formatIndex(sidoValues.get(feature.properties.sido))}/10` : '자료 없음'}</title>
           </path>
         ))}
         {features.map((feature) => {
@@ -175,7 +176,7 @@ export function KoreaMap({
           className="cursor-pointer stroke-(--map-stroke) transition-opacity duration-200 ease-out hover:opacity-75"
           onClick={() => onSelectDong(feature.properties.adm_cd2)}
         >
-          <title>{feature.properties.adm_nm}</title>
+          <title>{feature.properties.adm_nm} · I5 {formatIndex(dongValues.get(feature.properties.adm_cd2)) ? `${formatIndex(dongValues.get(feature.properties.adm_cd2))}/10` : '자료 없음'}</title>
         </path>
       ))}
       {selected && (

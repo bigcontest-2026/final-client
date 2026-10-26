@@ -120,6 +120,23 @@ export function isAbort(error: unknown): boolean {
   return error instanceof DOMException && error.name === 'AbortError'
 }
 
+export async function requestBlob(path: string, signal?: AbortSignal): Promise<Blob> {
+  const timeout = AbortSignal.timeout(60_000)
+  let response: Response
+  try {
+    response = await fetch(`${BASE_URL}${path}`, { signal: signal ? AbortSignal.any([signal, timeout]) : timeout })
+  } catch (error) {
+    if (signal?.aborted) throw error
+    throw new ApiError(0, timeout.aborted ? '문서 생성이 오래 걸립니다. 다시 시도해 주세요.' : '서버에 연결하지 못했습니다.', 'export_network_error', null, null)
+  }
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    const { message, code } = describeErrorDetail(response.status, data)
+    throw new ApiError(response.status, message, code, null, null)
+  }
+  return response.blob()
+}
+
 export function errorMessage(error: unknown): string {
   if (error instanceof ApiError) return error.message
   return GENERIC_MESSAGE

@@ -23,7 +23,7 @@ export function MainPage() {
   const [question, setQuestion] = useState('')
   const [provinceCode, setProvinceCode] = useState('')
   const [regionCode, setRegionCode] = useState('')
-  const [ageCode, setAgeCode] = useState<AgeCode | ''>('20G')
+  const [ageCode, setAgeCode] = useState<AgeCode | ''>('')
   const [running, setRunning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const lastDong = useMemo(() => readJson<{ code: string; name: string } | null>(LAST_DONG_KEY, null), [])
@@ -100,7 +100,7 @@ export function MainPage() {
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
           rows={3}
-          placeholder="예: 춘천시 20대의 활동 변화를 분석해 줘"
+          placeholder="예: 서울시 강남구20대의 활동 변화를 분석해 줘"
           aria-label="헤르미에게 질문하기"
           className="w-full resize-y rounded-card-sm bg-fill px-5 py-4 text-body text-label placeholder:text-label-secondary transition-quick focus:bg-field focus:ring-4 focus:ring-accent-tint focus:outline-none"
         />
@@ -201,13 +201,13 @@ export function MainPage() {
           </summary>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-subhead text-label-secondary">
             <li>통신·카드 활동 자료는 시군구 단위 참고 자료입니다. 지금은 서울 강남구와 춘천시 자료만 연결되어 있습니다.</li>
-            <li>지역 고립 지수(I5)는 전국 설문의 집단 평균을 지역 인구구성으로 가중한 참고값입니다. 그 지역에서 직접 조사한 값이 아닙니다.</li>
+            <li>지역 고립 지수는 I5의 0~10 표시점수입니다. 2025년 12월 시군구 기준 상대점수로, 5점은 기준 평균입니다. 지역 직접 조사값·고립률·위험등급이 아닙니다.</li>
             <li>현황 보고서와 예방 대응 보고서는 서버에 저장되어 "저장된 보고서"에서 다시 볼 수 있습니다.</li>
             <li>대응안을 고치는 동안에는 이 기기에 임시 저장되고, "변경 내용 저장"을 눌러야 서버에 저장됩니다.</li>
             <li>지원 필요·자격·접수 여부는 확인되지 않은 상태가 기본입니다. 최종 판단은 담당자가 합니다.</li>
           </ul>
         </details>
-        <p className="mt-6 text-center text-subhead text-label-secondary">확인한 자료를 바탕으로, 최종 판단은 담당자와 함께해요.</p>
+        {/* <p className="mt-6 text-center text-subhead text-label-secondary">확인한 자료를 바탕으로, 최종 판단은 담당자와 함께해요.</p> */}
       </section>
     </div>
   )

@@ -1,7 +1,7 @@
 @import 'tailwindcss' source('./');
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Pretendard Variable', Pretendard, system-ui, sans-serif;
 
@@ -12,14 +12,14 @@
   --fill-strong: rgb(120 120 128 / 0.16);
 
   --label: #1d1d1f;
-  --label-secondary: #6e6e73;
+  --label-secondary: #636368;
   --label-tertiary: #86868b;
 
   --separator: rgb(0 0 0 / 0.08);
   --separator-opaque: #d2d2d7;
 
   --accent: #0071e3;
-  --accent-hover: #0077ed;
+  --accent-hover: #006edb;
   --link: #0066cc;
   --accent-tint: rgb(0 113 227 / 0.1);
   --on-accent: #ffffff;
@@ -42,6 +42,7 @@
   --material-thick: rgb(255 255 255 / 0.86);
   --scrim: rgb(0 0 0 / 0.32);
 
+  --shadow-tab: 0 1px 4px rgb(0 0 0 / 0.12);
   --shadow-soft: 0 8px 30px rgb(0 0 0 / 0.08);
   --shadow-float: 0 24px 80px rgb(0 0 0 / 0.18);
 
@@ -56,50 +57,50 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --canvas: #000000;
-    --elevated: #1d1d1f;
-    --field: #2c2c2e;
-    --fill: rgb(120 120 128 / 0.2);
-    --fill-strong: rgb(120 120 128 / 0.32);
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #000000;
+  --elevated: #1d1d1f;
+  --field: #2c2c2e;
+  --fill: rgb(120 120 128 / 0.2);
+  --fill-strong: rgb(120 120 128 / 0.32);
 
-    --label: #f5f5f7;
-    --label-secondary: #a1a1a6;
-    --label-tertiary: #86868b;
+  --label: #f5f5f7;
+  --label-secondary: #b0b0b6;
+  --label-tertiary: #86868b;
 
-    --separator: rgb(255 255 255 / 0.12);
-    --separator-opaque: #424245;
+  --separator: rgb(255 255 255 / 0.12);
+  --separator-opaque: #424245;
 
-    --accent: #0071e3;
-    --accent-hover: #0077ed;
-    --link: #2997ff;
-    --accent-tint: rgb(41 151 255 / 0.16);
+  --accent: #0071e3;
+  --accent-hover: #006edb;
+  --link: #2997ff;
+  --accent-tint: rgb(41 151 255 / 0.16);
 
-    --success: #30d158;
-    --warning: #ff9f0a;
-    --danger: #ff6961;
-    --danger-tint: rgb(255 69 58 / 0.14);
-    --success-tint: rgb(48 209 88 / 0.16);
-    --warning-tint: rgb(255 159 10 / 0.16);
+  --success: #30d158;
+  --warning: #ff9f0a;
+  --danger: #ff6961;
+  --danger-tint: rgb(255 69 58 / 0.14);
+  --success-tint: rgb(48 209 88 / 0.16);
+  --warning-tint: rgb(255 159 10 / 0.16);
 
-    --dot-gray: #636366;
+  --dot-gray: #636366;
 
-    --material: rgb(22 22 23 / 0.8);
-    --material-thick: rgb(29 29 31 / 0.86);
-    --scrim: rgb(0 0 0 / 0.55);
+  --material: rgb(22 22 23 / 0.8);
+  --material-thick: rgb(29 29 31 / 0.86);
+  --scrim: rgb(0 0 0 / 0.55);
 
-    --shadow-soft: 0 8px 30px rgb(0 0 0 / 0.5);
-    --shadow-float: 0 24px 80px rgb(0 0 0 / 0.7);
+  --shadow-tab: 0 1px 4px rgb(0 0 0 / 0.55);
+  --shadow-soft: 0 8px 30px rgb(0 0 0 / 0.5);
+  --shadow-float: 0 24px 80px rgb(0 0 0 / 0.7);
 
-    --map-1: #16304d;
-    --map-2: #1d4f86;
-    --map-3: #2f74c4;
-    --map-4: #5fa3ee;
-    --map-5: #a9d0fa;
-    --map-none: #3a3a3c;
-    --map-stroke: #1d1d1f;
-  }
+  --map-1: #16304d;
+  --map-2: #1d4f86;
+  --map-3: #2f74c4;
+  --map-4: #5fa3ee;
+  --map-5: #a9d0fa;
+  --map-none: #3a3a3c;
+  --map-stroke: #1d1d1f;
 }
 
 @theme inline {
