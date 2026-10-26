@@ -173,6 +173,7 @@ export function RegionBackground({ report }: { report: AnalysisReport }) {
             <p className="mt-1 text-footnote text-label-secondary">{INDEX_SOURCE_NOTE}. 지역에서 직접 조사한 값·고립률·위험등급이 아닙니다.</p>
             {i5.domain_scores && (
               <div className="mt-2 flex flex-wrap gap-2" aria-label="영역별 참고점수 (0~100점)">
+                <span className="w-full text-footnote text-label-secondary">영역별 참고점수 (0~100점)</span>
                 {Object.entries(i5.domain_scores).map(([key, value]) => (
                   <span key={key} className="rounded-full bg-fill px-2.5 py-1 text-footnote tabular-nums">
                     {DOMAIN_LABELS[key] ?? key} {formatIndex(value)}/100

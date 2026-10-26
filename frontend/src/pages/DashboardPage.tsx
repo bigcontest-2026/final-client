@@ -376,7 +376,7 @@ function DongDetail({
           <span className="size-3 rounded-full" style={{ background: fillFor(displayScore(dong)) }} aria-hidden="true" />
           <span className="text-title-1 text-label tabular-nums">{formatIndex(displayScore(dong)) || '자료 없음'}</span>
         </div>
-        <p className="mt-1 text-footnote text-label-secondary">동의 인구구성으로 가중한 지역 전체 참고값입니다.</p>
+        <p className="mt-1 text-footnote text-label-secondary">2025년 12월 시군구 기준 상대점수입니다. 5점은 기준 평균입니다.</p>
         <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-separator pt-3 text-subhead">
           <div>
             <dt className="text-footnote text-label-secondary">전체 인구</dt>
