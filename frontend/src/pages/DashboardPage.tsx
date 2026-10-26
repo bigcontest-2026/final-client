@@ -174,7 +174,7 @@ export function DashboardPage() {
                       </span>
                       <span className="flex shrink-0 items-center gap-1.5" title={INDEX_NAME}>
                         <span className="size-2.5 rounded-full" style={{ background: fillFor(displayScore(dong)) }} aria-hidden="true" />
-                        <span className="text-subhead font-semibold text-label tabular-nums">{formatIndex(displayScore(dong))}</span>
+                        <span className="text-subhead font-semibold text-label tabular-nums">{formatIndex(displayScore(dong)) || '자료 없음'}</span>
                       </span>
                     </button>
                   </li>
@@ -374,7 +374,7 @@ function DongDetail({
         <div className="text-footnote text-label-secondary">{INDEX_NAME}</div>
         <div className="mt-1 flex items-center gap-2">
           <span className="size-3 rounded-full" style={{ background: fillFor(displayScore(dong)) }} aria-hidden="true" />
-          <span className="text-title-1 text-label tabular-nums">{formatIndex(displayScore(dong)) || '값 없음'}</span>
+          <span className="text-title-1 text-label tabular-nums">{formatIndex(displayScore(dong)) || '자료 없음'}</span>
         </div>
         <p className="mt-1 text-footnote text-label-secondary">동의 인구구성으로 가중한 지역 전체 참고값입니다.</p>
         <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-separator pt-3 text-subhead">
