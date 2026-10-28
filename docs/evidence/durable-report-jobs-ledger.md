@@ -1,0 +1,18 @@
+# H2 execution ledger
+
+- Read approved brief, spec, plan and exact shared API contract; used executing-plans, TDD and targeted UI/UX submit-feedback guidance.
+- Baseline: 53/53 frontend tests and build passed; existing bundle advisory recorded.
+- RED→GREEN: missing Job API/controller imports then 10 lifecycle tests passed. Added explicit in-flight deadline regression; watched `busy` remain true past the budget, then added an abortable deadline and verified green.
+- RED→GREEN: missing assist snapshot helper, then exact draft/report application and unknown restored context tests passed.
+- RED→GREEN: missing investigation attachment helper, then child→root and stale-root rejection tests passed.
+- Added exact per-job persisted context restoration, same-report/different-job rejection, deterministic trace and developer-only UI fixture.
+- Ruling: retain synchronous summary/endpoints for compatibility while active panels use jobs — existing tests/other consumers retain stable APIs — old callers retain request-bound behavior until separately migrated.
+- Ruling: locally persist request context alongside job identity and make unknown restored assist proposals read-only — the fixed shared API intentionally has no request payload/fingerprint in Job — proposals originating on another device can be previewed but need a new request before application.
+- Ruling: accept original-root parent attachment for a child investigation — confirmed existing server `_root_report` behavior with controller — a result with a different root is rejected.
+- Ruling: retain the isolated checkout for controller review/publication rather than follow generic skill workspace deletion — task explicitly requires parent-owned publication — temporary checkout cleanup remains controller-owned.
+- Self-review: controller observers stop on unmount, network status requests share the elapsed deadline, late poll writes are fenced, same-payload completed reuse can be shown again, report data retained by `useApi` cannot render or receive results under a different report ID.
+- Verification: final full suite, typecheck/build, fixture typecheck and diff whitespace check recorded in the handoff. Browser Vite start was blocked by sandbox listen EPERM; no visual pass claimed. Independent whole-branch review is controller-owned.
+- Final: fixed summary submission recovery getting stuck after an empty successful re-list — removed a one-shot report ref and added an idle/restored/no-error submission predicate, 2 tests RED→GREEN; final full suite 73/73 and build passed. Removed the old 3-minute investigation guarantee because durable observation has an independently bounded lifetime.
+- Independent review approved with P3 stale-report guard ordering finding. Added a controlled-hook component rendering regression for previous report → replacement pending → replacement failed. RED showed only the spinner instead of the failure; GREEN checks error/retry appear and stale content remains hidden after checking error before the stale-data guard.
+- Added the controller's actual TypeScript↔FastAPI stdio integration JSON and reproduction/environment notes: seven named checks, nine fetch-traced HTTP-equivalent requests passed, 50 ms mock summary provider, temporary database, no browser/network socket/real model.
+- Review follow-up final verification: focused AnalysisDetail component regression 1/1 passed, full suite 74/74 across 15 files, production build including TypeScript passed (466 modules; existing bundle advisory only). IPC source/result ownership remains the parent; copied the supplied JSON byte-for-byte and documented reproduction commands.

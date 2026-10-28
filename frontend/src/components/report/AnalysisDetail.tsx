@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { ApiError, errorMessage } from '../../api/client'
 import { api } from '../../api/endpoints'
 import type { AnalysisReport, AnalysisReportSummary } from '../../api/types'
 import { ReportDownload } from './ReportDownload'
@@ -8,14 +7,15 @@ import { useApi } from '../../lib/useApi'
 import { Markdown } from '../Markdown'
 import { Icon } from '../icons'
 import { Accordion, Badge, Button, ErrorBox, Notice, Spinner, Thinking } from '../ui'
+import { matchesInvestigationResult } from '../../lib/jobs/investigationResult'
+import { useReportJob } from '../../lib/jobs/useReportJob'
+import { ReportJobStatus } from './ReportJobStatus'
 import { AiSummaryPanel, AssessmentAccordion, InvestigationResult, LifecycleSection, RegionBackground } from './ReportSections'
 
 export function analysisFilename(report: AnalysisReport): string {
   const area = report.scope.dong_code ?? report.scope.region_code
   return `HERMES_현황분석_${area}_${report.scope.month}_${report.report_id}.md`
 }
-
-const MAX_CONFLICT_RETRIES = 18
 
 export function AnalysisDetail({
   reportId,
@@ -31,22 +31,26 @@ export function AnalysisDetail({
   onReportCreated?: (report: AnalysisReport) => void
 }) {
   const { data: report, error, loading, reload } = useApi((signal) => api.getAnalysisReport(reportId, signal), [reportId])
-  const [investigating, setInvestigating] = useState(false)
-  const [investigationError, setInvestigationError] = useState<string | null>(null)
+  const investigation = useReportJob(reportId, 'investigate')
+  const investigating = investigation.busy || investigation.pending
+  const delivered = useRef<string | null>(null)
+  const onCreated = useRef(onReportCreated)
+  onCreated.current = onReportCreated
   const [comparing, setComparing] = useState(false)
-  const alive = useRef(true)
-
+  useEffect(() => { setComparing(false) }, [reportId])
   useEffect(() => {
-    alive.current = true
-    setInvestigationError(null)
-    setComparing(false)
-    return () => {
-      alive.current = false
-    }
-  }, [reportId])
+    const result = investigation.result
+    const job = investigation.job
+    if (!result || !job || job.report_id !== reportId || delivered.current === job.job_id) return
+    // Re-investigating a child attaches the new report to the original root.
+    if (!report || !matchesInvestigationResult(report, reportId, result)) return
+    delivered.current = job.job_id
+    onCreated.current?.(result)
+  }, [investigation.result, investigation.job, reportId, report])
 
-  if (loading && !report) return <Spinner label="보고서를 불러오는 중" />
-  if (error || !report) return <ErrorBox message={error ?? '보고서를 불러오지 못했습니다.'} onRetry={reload} />
+  if (error) return <ErrorBox message={error} onRetry={reload} />
+  if ((loading && !report) || (report && report.report_id !== reportId)) return <Spinner label="보고서를 불러오는 중" />
+  if (!report) return <ErrorBox message="보고서를 불러오지 못했습니다." onRetry={reload} />
 
   const isDong = Boolean(report.scope.dong_code)
   const parentName = report.context.activity_scope?.region_name ?? ''
@@ -54,29 +58,9 @@ export function AnalysisDetail({
   const canInvestigate = report.context_investigation_status !== 'not_applicable' && report.assessments.some((item) => item.category !== 'assessment_hold')
 
   const investigate = async (comparisonIds: string[]) => {
-    setInvestigating(true)
-    setInvestigationError(null)
+    delivered.current = null
     setComparing(false)
-    try {
-      for (let attempt = 0; ; attempt += 1) {
-        try {
-          const result = await api.investigate(report.report_id, comparisonIds)
-          if (alive.current) onReportCreated?.(result)
-          return
-        } catch (reason) {
-          if (reason instanceof ApiError && reason.status === 409 && reason.code === 'analysis_research_in_progress' && attempt < MAX_CONFLICT_RETRIES) {
-            await new Promise((resolve) => setTimeout(resolve, (reason.retryAfter ?? 10) * 1000))
-            if (!alive.current) return
-            continue
-          }
-          throw reason
-        }
-      }
-    } catch (reason) {
-      if (alive.current) setInvestigationError(errorMessage(reason))
-    } finally {
-      if (alive.current) setInvestigating(false)
-    }
+    await investigation.submit(comparisonIds.length ? { comparison_report_ids: comparisonIds } : {}, JSON.stringify({ reportId: report.report_id, comparisonIds }))
   }
 
   return (
@@ -140,8 +124,8 @@ export function AnalysisDetail({
             </Button>
           </div>
           {!canInvestigate && <p className="text-footnote text-label-secondary">활동 관측이 없는 보고서라 원인 조사를 할 수 없습니다.</p>}
-          {investigating && <Thinking label="헤르미가 공개 자료에서 지역 맥락을 찾고 있어요. 최대 3분쯤 걸려요." />}
-          {investigationError && <ErrorBox message={investigationError} />}
+          {investigating && <Thinking label="헤르미가 공개 자료에서 지역 맥락을 찾고 있어요." />}
+          <ReportJobStatus task={investigation} />
         </div>
       )}
 

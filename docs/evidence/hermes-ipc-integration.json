@@ -1,0 +1,69 @@
+{
+  "scope": "real TypeScript client/controller + real FastAPI TestClient via stdin/stdout; fake 50ms summary provider; no network or browser",
+  "assertions": [
+    "202 queued",
+    "poll to validated summary",
+    "same-request completed reuse",
+    "restore",
+    "cancel queued",
+    "retry",
+    "wrong report ownership rejected"
+  ],
+  "trace": [
+    {
+      "path": "/api/model/analysis-reports/analysis_af1cdfafbc1c4bf5862fcdc1fa25078a/jobs",
+      "method": "POST",
+      "status": 202,
+      "elapsed_ms": 5.467
+    },
+    {
+      "path": "/api/model/analysis-reports/analysis_af1cdfafbc1c4bf5862fcdc1fa25078a/jobs/job_f77dc0c28ef6493a8273428e49553e60",
+      "method": "GET",
+      "status": 200,
+      "elapsed_ms": 1.994
+    },
+    {
+      "path": "/api/model/analysis-reports/analysis_af1cdfafbc1c4bf5862fcdc1fa25078a/jobs",
+      "method": "POST",
+      "status": 202,
+      "elapsed_ms": 3.404
+    },
+    {
+      "path": "/api/model/analysis-reports/analysis_af1cdfafbc1c4bf5862fcdc1fa25078a/jobs",
+      "method": "GET",
+      "status": 200,
+      "elapsed_ms": 2.223
+    },
+    {
+      "path": "/api/model/analysis-reports/analysis_eb90203b597a42fa952a12ff3e9520ca/jobs",
+      "method": "POST",
+      "status": 202,
+      "elapsed_ms": 3.525
+    },
+    {
+      "path": "/api/model/analysis-reports/analysis_eb90203b597a42fa952a12ff3e9520ca/jobs/job_78036d4958fb49de84075018de837b07/cancel",
+      "method": "POST",
+      "status": 200,
+      "elapsed_ms": 2.707
+    },
+    {
+      "path": "/api/model/analysis-reports/analysis_eb90203b597a42fa952a12ff3e9520ca/jobs/job_78036d4958fb49de84075018de837b07/retry",
+      "method": "POST",
+      "status": 200,
+      "elapsed_ms": 3.631
+    },
+    {
+      "path": "/api/model/analysis-reports/analysis_eb90203b597a42fa952a12ff3e9520ca/jobs/job_78036d4958fb49de84075018de837b07",
+      "method": "GET",
+      "status": 200,
+      "elapsed_ms": 1.77
+    },
+    {
+      "path": "/api/model/analysis-reports/analysis_af1cdfafbc1c4bf5862fcdc1fa25078a/jobs/job_78036d4958fb49de84075018de837b07",
+      "method": "GET",
+      "status": 404,
+      "elapsed_ms": 1.467
+    }
+  ],
+  "stderr": ""
+}

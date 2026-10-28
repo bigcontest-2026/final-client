@@ -1,12 +1,14 @@
 import { displayScore, INDEX_SOURCE_NOTE } from '../../lib/indexScale'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { errorMessage } from '../../api/client'
-import { requestActivitySummary } from '../../api/summary'
+import { useEffect } from 'react'
+import { SUMMARY_UNAVAILABLE_MESSAGE } from '../../api/summary'
+import { shouldSubmitSummary } from '../../lib/jobs/ReportJobController'
+import { useReportJob } from '../../lib/jobs/useReportJob'
+import { ReportJobStatus } from './ReportJobStatus'
 import type { AnalysisReport, ContextInvestigation, LifecycleInterpretation, ReportAssessment, SourceKey } from '../../api/types'
 import { formatIndex, formatNumber, formatPercent } from '../../lib/format'
 import { CATEGORY_TONE, SOURCE_LABELS, scopeGroupLabel } from '../../lib/labels'
 import { Icon } from '../icons'
-import { Accordion, Badge, Button, Spinner } from '../ui'
+import { Accordion, Badge, Spinner } from '../ui'
 
 const TONE_DOT = { amber: 'bg-dot-yellow', orange: 'bg-dot-orange', sky: 'bg-accent', slate: 'bg-dot-gray' }
 
@@ -17,23 +19,14 @@ function thresholdText(value: boolean | null | undefined): string {
 }
 
 export function AiSummaryPanel({ report }: { report: AnalysisReport }) {
-  const generation = useRef(0)
-  const [result, setState] = useState<{ reportId: string; loading: boolean; text: string | null; error: string | null }>({ reportId: report.report_id, loading: true, text: null, error: null })
-  const state = result.reportId === report.report_id ? result : { loading: true, text: null, error: null }
-
-  const run = useCallback(() => {
-    const current = ++generation.current
-    setState({ reportId: report.report_id, loading: true, text: null, error: null })
-    requestActivitySummary(report)
-      .then((text) => { if (generation.current === current) setState({ reportId: report.report_id, loading: false, text, error: null }) })
-      .catch((reason) => { if (generation.current === current) setState({ reportId: report.report_id, loading: false, text: null, error: errorMessage(reason) }) })
-  }, [report])
-
+  const task = useReportJob(report.report_id, 'summary')
   useEffect(() => {
-    run()
-    return () => { generation.current++ }
-  }, [run])
-
+    if (shouldSubmitSummary(task, task.restored)) {
+      void task.submit({}, report.report_id)
+    }
+  }, [task.restored, task.busy, task.job, task.error, task.submit, report.report_id])
+  const summary = task.result
+  const valid = summary?.report_id === report.report_id && typeof summary.text === 'string' && Boolean(summary.text.trim())
   return (
     <section className="rounded-card-sm bg-elevated px-5 py-4">
       <h4 className="flex items-center gap-1.5 text-headline text-label">
@@ -41,16 +34,10 @@ export function AiSummaryPanel({ report }: { report: AnalysisReport }) {
         활동 변화 AI 요약
       </h4>
       <div className="mt-2 text-subhead">
-        {state.loading && <Spinner label="요약을 만드는 중" />}
-        {state.text && <p className="text-label">{state.text}</p>}
-        {state.error && (
-          <div className="flex flex-col items-start gap-3">
-            <p className="text-warning">{state.error}</p>
-            <Button size="sm" onClick={run}>
-              AI 요약 다시 시도
-            </Button>
-          </div>
-        )}
+        {task.busy && <Spinner label="요약을 만드는 중" />}
+        {valid && <p className="text-label">{summary!.text}</p>}
+        {summary && !valid && <p role="alert" className="text-warning">{SUMMARY_UNAVAILABLE_MESSAGE}</p>}
+        <ReportJobStatus task={task} />
       </div>
     </section>
   )

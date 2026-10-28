@@ -1,0 +1,415 @@
+{
+  "schema": "hermes-client-job-trace-1",
+  "provider": "deterministic mocked HTTP + virtual clock; no real model or network",
+  "environment": {
+    "runtime": "Vitest 3.2.7 / Node; virtual time",
+    "node": "v22.20.0",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "parameters": {
+    "samples": 8,
+    "providerDurationsMs": [
+      600,
+      1800,
+      2600,
+      4200,
+      600,
+      1800,
+      2600,
+      4200
+    ],
+    "httpEnvelopeMs": 5,
+    "pollIntervalMs": 1000,
+    "maxElapsedMs": 10000
+  },
+  "result": {
+    "correct": 8,
+    "failed": 0,
+    "baselineFirstFeedbackMs": {
+      "p50": 1805,
+      "p95": 4205,
+      "min": 605,
+      "max": 4205
+    },
+    "durableFirstFeedbackMs": {
+      "p50": 5,
+      "p95": 5,
+      "min": 5,
+      "max": 5
+    },
+    "durableTerminalMs": {
+      "p50": 2015,
+      "p95": 5030,
+      "min": 1010,
+      "max": 5030
+    }
+  },
+  "limitation": "Protocol/UI lifecycle evidence only. Acknowledgement is earlier; polling adds detection delay. No inference about real model speed, GPU throughput or deployment.",
+  "samples": [
+    {
+      "reportId": "trace-0",
+      "providerMs": 600,
+      "baselineMs": 605,
+      "acknowledgedMs": 5,
+      "terminalMs": 1010,
+      "polls": 1,
+      "requests": [
+        {
+          "atMs": 5,
+          "method": "POST",
+          "path": "/api/model/analysis-reports/trace-0/jobs",
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-0/jobs/job-0",
+          "status": "succeeded"
+        }
+      ],
+      "transitions": [
+        {
+          "atMs": 5,
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "status": "succeeded"
+        }
+      ]
+    },
+    {
+      "reportId": "trace-1",
+      "providerMs": 1800,
+      "baselineMs": 1805,
+      "acknowledgedMs": 5,
+      "terminalMs": 2015,
+      "polls": 2,
+      "requests": [
+        {
+          "atMs": 5,
+          "method": "POST",
+          "path": "/api/model/analysis-reports/trace-1/jobs",
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-1/jobs/job-1",
+          "status": "running"
+        },
+        {
+          "atMs": 2015,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-1/jobs/job-1",
+          "status": "succeeded"
+        }
+      ],
+      "transitions": [
+        {
+          "atMs": 5,
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "status": "running"
+        },
+        {
+          "atMs": 2015,
+          "status": "succeeded"
+        }
+      ]
+    },
+    {
+      "reportId": "trace-2",
+      "providerMs": 2600,
+      "baselineMs": 2605,
+      "acknowledgedMs": 5,
+      "terminalMs": 3020,
+      "polls": 3,
+      "requests": [
+        {
+          "atMs": 5,
+          "method": "POST",
+          "path": "/api/model/analysis-reports/trace-2/jobs",
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-2/jobs/job-2",
+          "status": "running"
+        },
+        {
+          "atMs": 2015,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-2/jobs/job-2",
+          "status": "running"
+        },
+        {
+          "atMs": 3020,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-2/jobs/job-2",
+          "status": "succeeded"
+        }
+      ],
+      "transitions": [
+        {
+          "atMs": 5,
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "status": "running"
+        },
+        {
+          "atMs": 3020,
+          "status": "succeeded"
+        }
+      ]
+    },
+    {
+      "reportId": "trace-3",
+      "providerMs": 4200,
+      "baselineMs": 4205,
+      "acknowledgedMs": 5,
+      "terminalMs": 5030,
+      "polls": 5,
+      "requests": [
+        {
+          "atMs": 5,
+          "method": "POST",
+          "path": "/api/model/analysis-reports/trace-3/jobs",
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-3/jobs/job-3",
+          "status": "running"
+        },
+        {
+          "atMs": 2015,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-3/jobs/job-3",
+          "status": "running"
+        },
+        {
+          "atMs": 3020,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-3/jobs/job-3",
+          "status": "running"
+        },
+        {
+          "atMs": 4025,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-3/jobs/job-3",
+          "status": "running"
+        },
+        {
+          "atMs": 5030,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-3/jobs/job-3",
+          "status": "succeeded"
+        }
+      ],
+      "transitions": [
+        {
+          "atMs": 5,
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "status": "running"
+        },
+        {
+          "atMs": 5030,
+          "status": "succeeded"
+        }
+      ]
+    },
+    {
+      "reportId": "trace-4",
+      "providerMs": 600,
+      "baselineMs": 605,
+      "acknowledgedMs": 5,
+      "terminalMs": 1010,
+      "polls": 1,
+      "requests": [
+        {
+          "atMs": 5,
+          "method": "POST",
+          "path": "/api/model/analysis-reports/trace-4/jobs",
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-4/jobs/job-4",
+          "status": "succeeded"
+        }
+      ],
+      "transitions": [
+        {
+          "atMs": 5,
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "status": "succeeded"
+        }
+      ]
+    },
+    {
+      "reportId": "trace-5",
+      "providerMs": 1800,
+      "baselineMs": 1805,
+      "acknowledgedMs": 5,
+      "terminalMs": 2015,
+      "polls": 2,
+      "requests": [
+        {
+          "atMs": 5,
+          "method": "POST",
+          "path": "/api/model/analysis-reports/trace-5/jobs",
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-5/jobs/job-5",
+          "status": "running"
+        },
+        {
+          "atMs": 2015,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-5/jobs/job-5",
+          "status": "succeeded"
+        }
+      ],
+      "transitions": [
+        {
+          "atMs": 5,
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "status": "running"
+        },
+        {
+          "atMs": 2015,
+          "status": "succeeded"
+        }
+      ]
+    },
+    {
+      "reportId": "trace-6",
+      "providerMs": 2600,
+      "baselineMs": 2605,
+      "acknowledgedMs": 5,
+      "terminalMs": 3020,
+      "polls": 3,
+      "requests": [
+        {
+          "atMs": 5,
+          "method": "POST",
+          "path": "/api/model/analysis-reports/trace-6/jobs",
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-6/jobs/job-6",
+          "status": "running"
+        },
+        {
+          "atMs": 2015,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-6/jobs/job-6",
+          "status": "running"
+        },
+        {
+          "atMs": 3020,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-6/jobs/job-6",
+          "status": "succeeded"
+        }
+      ],
+      "transitions": [
+        {
+          "atMs": 5,
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "status": "running"
+        },
+        {
+          "atMs": 3020,
+          "status": "succeeded"
+        }
+      ]
+    },
+    {
+      "reportId": "trace-7",
+      "providerMs": 4200,
+      "baselineMs": 4205,
+      "acknowledgedMs": 5,
+      "terminalMs": 5030,
+      "polls": 5,
+      "requests": [
+        {
+          "atMs": 5,
+          "method": "POST",
+          "path": "/api/model/analysis-reports/trace-7/jobs",
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-7/jobs/job-7",
+          "status": "running"
+        },
+        {
+          "atMs": 2015,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-7/jobs/job-7",
+          "status": "running"
+        },
+        {
+          "atMs": 3020,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-7/jobs/job-7",
+          "status": "running"
+        },
+        {
+          "atMs": 4025,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-7/jobs/job-7",
+          "status": "running"
+        },
+        {
+          "atMs": 5030,
+          "method": "GET",
+          "path": "/api/model/analysis-reports/trace-7/jobs/job-7",
+          "status": "succeeded"
+        }
+      ],
+      "transitions": [
+        {
+          "atMs": 5,
+          "status": "queued"
+        },
+        {
+          "atMs": 1010,
+          "status": "running"
+        },
+        {
+          "atMs": 5030,
+          "status": "succeeded"
+        }
+      ]
+    }
+  ]
+}
